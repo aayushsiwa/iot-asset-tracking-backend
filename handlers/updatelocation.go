@@ -31,6 +31,11 @@ func UpdateLocation(w http.ResponseWriter, r *http.Request) {
 		patchReq.Code = &code
 	}
 
+	if patchReq.Name == nil && patchReq.Code == nil {
+		http.Error(w, `{"error":"`+helpers.ErrNoValidFieldsToUpdate.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+
 	patch := model.LocationPatch{
 		ID:   uid,
 		Name: patchReq.Name,
@@ -50,11 +55,11 @@ func UpdateLocation(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if errors.Is(err, helpers.ErrLocationDoesNotExist) {
-			http.Error(w, `{"error":"`+helpers.ErrLocationDoesNotExist.Error()+`"}`, http.StatusNotFound)
+			w.WriteHeader(http.StatusOK)
 			return
 		}
 
-		http.Error(w, `{"error":"update location failed"}`, http.StatusInternalServerError)
+		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusBadRequest)
 		return
 	}
 

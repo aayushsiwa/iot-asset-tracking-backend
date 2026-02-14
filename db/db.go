@@ -19,16 +19,16 @@ const (
 	maxLifetime = 30 * time.Minute
 )
 
-// Init initializes PostgreSQL and sets the global DB variable.
+// Init initializes Database and sets the global DB variable.
 func Init(ctx context.Context, connStr string) error {
 	var err error
 
-	slog.Info("Connecting to PostgreSQL...")
+	slog.Info("Connecting to Database...")
 
 	// Initialize connection using pq
 	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
-		slog.Error("Failed to open PostgreSQL connection", slog.Any("error", err))
+		slog.Error("Failed to open Database connection", slog.Any("error", err))
 		return err
 	}
 
@@ -47,7 +47,7 @@ func Init(ctx context.Context, connStr string) error {
 		return err
 	}
 
-	slog.Info("PostgreSQL connected successfully")
+	slog.Info("Database connected successfully")
 	return nil
 }
 
@@ -57,27 +57,9 @@ func Close() {
 		return
 	}
 
-	slog.Info("Closing PostgreSQL connection pool...")
+	slog.Info("Closing Database connection pool...")
 
 	if err := DB.Close(); err != nil {
 		slog.Error("Failed to close DB connection", slog.Any("error", err))
 	}
-}
-
-// HealthCheck verifies DB health
-func HealthCheck() error {
-	if DB == nil {
-		return sql.ErrConnDone
-	}
-
-	return DB.Ping()
-}
-
-// GetStats exposes DB statistics
-func GetStats() sql.DBStats {
-	if DB == nil {
-		return sql.DBStats{}
-	}
-
-	return DB.Stats()
 }

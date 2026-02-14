@@ -8,7 +8,7 @@ import (
 
 type Status string
 
-// Statuses is a map of genders
+// Statuses is a map of statuses
 var Statuses = struct {
 	Offline Status
 	Online  Status
@@ -28,13 +28,13 @@ type Asset struct {
 }
 
 type AssetPatch struct {
-	Name   string `json:"name" validate:"omitempty,min=5,max=50"`
-	Status Status `json:"status" validate:"omitempty,oneof=offline online"`
+	Name   *string
+	Status *Status
 }
 
 type CreateAssetRequest struct {
 	ID         *uuid.UUID `json:"ID"`
 	Name       string     `json:"name"`
 	Status     Status     `json:"status"`
-	LocationID string     `json:"locationID"`
+	LocationID uuid.UUID  `json:"locationID"`
 }

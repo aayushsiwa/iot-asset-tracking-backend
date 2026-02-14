@@ -11,7 +11,7 @@ func GetLocation(w http.ResponseWriter, r *http.Request) {
 	locations, err := domain.GetLocations(r.Context())
 
 	if err != nil {
-		http.Error(w, "db error: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		return
 	}
 

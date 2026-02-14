@@ -13,6 +13,11 @@ import (
 
 func CreateAsset(w http.ResponseWriter, r *http.Request) {
 	locationID := r.PathValue("locationID")
+	locationUUID, err := uuid.Parse(locationID)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
 
 	req := struct {
 		Name   string `json:"name" validate:"required,min=5,max=50"`
@@ -26,7 +31,7 @@ func CreateAsset(w http.ResponseWriter, r *http.Request) {
 	asset := &model.CreateAssetRequest{
 		Name:       req.Name,
 		Status:     model.Status(req.Status),
-		LocationID: locationID,
+		LocationID: locationUUID,
 	}
 
 	if err := domain.CreateAsset(r.Context(), asset); err != nil {

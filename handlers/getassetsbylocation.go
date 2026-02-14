@@ -5,6 +5,7 @@ import (
 	"crud/helpers"
 	"crud/model"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -15,15 +16,15 @@ func GetAssetsByLocation(w http.ResponseWriter, r *http.Request) {
 
 	uid, err := uuid.Parse(locationID)
 	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
+		http.Error(w, `{"error":"invalid id"}`, http.StatusBadRequest)
 		return
 	}
 
 	assets, err := domain.GetAssetsByLocation(r.Context(), uid)
 
 	if err != nil {
-		if err == helpers.ErrLocationDoesNotExist {
-			http.Error(w, `{"error":"`+helpers.ErrLocationDoesNotExist.Error()+`"}`, http.StatusBadRequest)
+		if errors.Is(err, helpers.ErrLocationDoesNotExist) {
+			http.Error(w, `{"error":"`+helpers.ErrLocationDoesNotExist.Error()+`"}`, http.StatusNotFound)
 			return
 		}
 

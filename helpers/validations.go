@@ -24,6 +24,7 @@ var (
 	ErrCodeAlreadyExists     = errors.New("code already exists")
 	ErrAssetAlreadyExists    = errors.New("asset already exists")
 	ErrAssetDoesNotExist     = errors.New("asset does not exist")
+	ErrNoValidFieldsToUpdate = errors.New("no valid fields to update")
 )
 
 var (
